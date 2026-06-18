@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1st Grade Science: Natural vs. Man-Made</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background-color: #f0fdfa; }
+        .game-card { transition: transform 0.2s; cursor: pointer; }
+        .game-card:hover { transform: scale(1.05); }
+        .game-card:active { transform: scale(0.95); }
+        
+        .correct-anim { animation: pop 0.5s ease; background-color: #d1fae5 !important; border-color: #10b981 !important; }
+        .wrong-anim { animation: shake 0.5s ease; background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+        
+        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-4">
+
+    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-lg p-6 mb-8 text-center border-4 border-teal-400 mt-4">
+        <h1 class="text-3xl md:text-4xl font-black text-teal-600 mb-2">🌍 Science Explorer 🛠️</h1>
+        <div class="inline-block bg-teal-100 px-6 py-2 rounded-full border-2 border-teal-300">
+            <span class="text-xl font-bold text-teal-800">Stars Earned: ⭐ <span id="score">0</span></span>
+        </div>
+    </div>
+
+    <div id="game-container" class="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-6 md:p-10 border-4 border-yellow-300 text-center">
+        <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-gray-700 mb-8">Loading game...</h2>
+
+        <div id="interactive-area" class="w-full"></div>
+        
+        <div id="feedback" class="h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center opacity-0 transition-opacity">
+            Feedback
+        </div>
+    </div>
+
+    <script>
+        // Database of items (Using Emojis as high-quality, fast-loading images)
+        const naturalItems = [
+            { name: "Tree", img: "🌳" }, { name: "Sun", img: "☀️" }, { name: "Flower", img: "🌻" },
+            { name: "Apple", img: "🍎" }, { name: "Water", img: "💧" }, { name: "Mountain", img: "⛰️" },
+            { name: "Dog", img: "🐶" }, { name: "Cat", img: "🐱" }, { name: "Leaf", img: "🍃" },
+            { name: "Cloud", img: "☁️" }, { name: "Butterfly", img: "🦋" }, { name: "Strawberry", img: "🍓" }
+        ];
+
+        const manMadeItems = [
+            { name: "Car", img: "🚗" }, { name: "House", img: "🏠" }, { name: "Robot", img: "🤖" },
+            { name: "Laptop", img: "💻" }, { name: "Bicycle", img: "🚲" }, { name: "Chair", img: "🪑" },
+            { name: "Book", img: "📖" }, { name: "Pencil", img: "✏️" }, { name: "Clock", img: "⏰" },
+            { name: "Television", img: "📺" }, { name: "Shoes", img: "👟" }, { name: "Teddy Bear", img: "🧸" }
+        ];
+
+        let score = 0;
+
+        // Utility: Get random item from array
+        const getRandom = (arr, count = 1) => {
+            const shuffled = [...arr].sort(() => 0.5 - Math.random());
+            return count === 1 ? shuffled[0] : shuffled.slice(0, count);
+        };
+
+        // Utility: Shuffle an array
+        const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
+
+        const questionText = document.getElementById("question-text");
+        const interactiveArea = document.getElementById("interactive-area");
+        const feedback = document.getElementById("feedback");
+        const scoreDisplay = document.getElementById("score");
+
+        function showFeedback(isCorrect, element) {
+            if (isCorrect) {
+                element.classList.add("correct-anim");
+                feedback.textContent = "🎉 Correct! Great job! 🎉";
+                feedback.className = "h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center text-green-700 bg-green-100 opacity-100 transition-opacity";
+                score++;
+                scoreDisplay.textContent = score;
+                // Wait 1.5 seconds then generate next question
+                setTimeout(generateQuestion, 1500);
+            } else {
+                element.classList.add("wrong-anim");
+                feedback.textContent = "Oops! Try again! 🤔";
+                feedback.className = "h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center text-red-700 bg-red-100 opacity-100 transition-opacity";
+                setTimeout(() => {
+                    element.classList.remove("wrong-anim");
+                    feedback.style.opacity = "0";
+                }, 1000);
+            }
+        }
+
+        // Game Mode 1: Classify Natural vs Man-Made
+        function buildClassifyGame() {
+            // Flip a coin to decide if we show a Natural or Man-Made item
+            const isNatural = Math.random() > 0.5;
+            const item = isNatural ? getRandom(naturalItems) : getRandom(manMadeItems);
+
+            questionText.innerHTML = `Look at the <strong>${item.name}</strong>.<br>Is it Natural or Man-Made?`;
+
+            interactiveArea.innerHTML = `
+                <div class="text-8xl md:text-9xl mb-8 filter drop-shadow-md">${item.img}</div>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <button id="btn-natural" class="game-card flex-1 bg-green-100 border-4 border-green-400 text-green-800 text-3xl font-bold py-6 px-8 rounded-2xl shadow-sm">
+                        🌿 Natural
+                    </button>
+                    <button id="btn-manmade" class="game-card flex-1 bg-blue-100 border-4 border-blue-400 text-blue-800 text-3xl font-bold py-6 px-8 rounded-2xl shadow-sm">
+                        🏭 Man-Made
+                    </button>
+                </div>
+            `;
+
+            document.getElementById("btn-natural").onclick = function() { showFeedback(isNatural, this); };
+            document.getElementById("btn-manmade").onclick = function() { showFeedback(!isNatural, this); };
+        }
+
+        // Game Mode 2: Odd One Out
+        function buildOddOneOutGame() {
+            const findManMade = Math.random() > 0.5; // If true, 3 natural, 1 man-made
+            
+            let options = [];
+            let correctItem;
+
+            if (findManMade) {
+                options = getRandom(naturalItems, 3);
+                correctItem = getRandom(manMadeItems);
+                questionText.innerHTML = `Find the <strong>Odd One Out</strong>!<br><span class="text-xl text-blue-600">(Which one was made by humans?)</span>`;
+            } else {
+                options = getRandom(manMadeItems, 3);
+                correctItem = getRandom(naturalItems);
+                questionText.innerHTML = `Find the <strong>Odd One Out</strong>!<br><span class="text-xl text-green-600">(Which one comes from nature?)</span>`;
+            }
+
+            // Tag the correct item so we can verify the click
+            correctItem.isCorrect = true;
+            options.forEach(opt => opt.isCorrect = false);
+            options.push(correctItem);
+            
+            // Shuffle them so the odd one isn't always last
+            options = shuffleArray(options);
+
+            interactiveArea.innerHTML = `<div class="grid grid-cols-2 gap-4"></div>`;
+            const grid = interactiveArea.querySelector('.grid');
+
+            options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "game-card bg-gray-50 border-4 border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center hover:bg-white hover:border-yellow-400";
+                btn.innerHTML = `<span class="text-7xl mb-2">${opt.img}</span><span class="text-xl font-bold text-gray-600">${opt.name}</span>`;
+                btn.onclick = function() { showFeedback(opt.isCorrect, this); };
+                grid.appendChild(btn);
+            });
+        }
+
+        // Main function to randomly pick a game mode
+        function generateQuestion() {
+            feedback.style.opacity = "0"; // hide feedback text
+            
+            // 50% chance for either game type
+            if (Math.random() > 0.5) {
+                buildClassifyGame();
+            } else {
+                buildOddOneOutGame();
+            }
+        }
+
+        // Start the game!
+        generateQuestion();
+    </script>
+</body>
+</html>
