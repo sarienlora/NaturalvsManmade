@@ -1,169 +1,1184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>1st Grade Science: Natural vs. Man-Made</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🌈 Natural vs Man-Made – Infinite Practice</title>
     <style>
-        body { font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif; background-color: #f0fdfa; }
-        .game-card { transition: transform 0.2s; cursor: pointer; }
-        .game-card:hover { transform: scale(1.05); }
-        .game-card:active { transform: scale(0.95); }
-        
-        .correct-anim { animation: pop 0.5s ease; background-color: #d1fae5 !important; border-color: #10b981 !important; }
-        .wrong-anim { animation: shake 0.5s ease; background-color: #fee2e2 !important; border-color: #ef4444 !important; }
-        
-        @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+        /* ── Reset & Base ── */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Comic Sans MS', 'Chalkboard SE', cursive, sans-serif;
+            background: linear-gradient(145deg, #fdf8ed 0%, #fef6e0 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        /* ── Main Container ── */
+        .app {
+            max-width: 780px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 60px 60px 40px 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10), 0 8px 24px rgba(0, 0, 0, 0.06);
+            padding: 30px 28px 40px;
+            transition: all 0.2s ease;
+            border: 2px solid #fff8e7;
+        }
+
+        /* ── Header ── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 3px dashed #e7dcc0;
+        }
+
+        .header h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            color: #4b3a2b;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header h1 span {
+            font-size: 2.2rem;
+        }
+
+        .badge-group {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #f5ede1;
+            border-radius: 100px;
+            padding: 6px 18px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #5b4a38;
+            box-shadow: inset 0 -2px 0 #d6c9b4;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge.quiz-num {
+            background: #b6d7e8;
+            color: #1f4a6b;
+            box-shadow: inset 0 -2px 0 #8bb4cc;
+        }
+        .badge.score-badge {
+            background: #f9d9b1;
+            color: #6f4f2c;
+            box-shadow: inset 0 -2px 0 #e2bc8e;
+        }
+
+        /* ── Progress Bar ── */
+        .progress-wrap {
+            background: #ede5d5;
+            border-radius: 40px;
+            height: 12px;
+            margin-bottom: 28px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #f9b84a, #f58b3c);
+            border-radius: 40px;
+            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ── Screens ── */
+        .screen {
+            display: none;
+            animation: fadeSlide 0.35s ease;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Start Screen ── */
+        .start-screen {
+            text-align: center;
+            padding: 20px 0 10px;
+        }
+        .start-screen .mascot {
+            font-size: 5rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+        .start-screen h2 {
+            font-size: 2.2rem;
+            color: #3f3223;
+            margin-bottom: 8px;
+        }
+        .start-screen p {
+            font-size: 1.2rem;
+            color: #6f5d49;
+            max-width: 440px;
+            margin: 0 auto 24px;
+            line-height: 1.5;
+        }
+        .start-screen .features {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px 28px;
+            font-size: 1.05rem;
+            color: #5b4a38;
+            margin-bottom: 30px;
+        }
+        .start-screen .features span {
+            background: #f5ede1;
+            padding: 6px 18px;
+            border-radius: 40px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn {
+            border: none;
+            background: #f5ede1;
+            padding: 14px 38px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #3f3223;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 4px 0 #d6c9b4, 0 6px 16px rgba(0, 0, 0, 0.06);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            touch-action: manipulation;
+        }
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #d6c9b4;
+        }
+        .btn-primary {
+            background: #ffb07c;
+            color: #3f2a16;
+            box-shadow: 0 4px 0 #cc8a5e, 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .btn-primary:active {
+            box-shadow: 0 1px 0 #cc8a5e;
+        }
+        .btn-success {
+            background: #89c9a8;
+            color: #1f452f;
+            box-shadow: 0 4px 0 #5f9a7c, 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+        .btn-success:active {
+            box-shadow: 0 1px 0 #5f9a7c;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #d6c9b4;
+            pointer-events: none;
+        }
+
+        /* ── Question Area ── */
+        .question-prompt {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #3f3223;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            text-align: center;
+            min-height: 3.6rem;
+        }
+        .question-prompt .emoji-big {
+            font-size: 2.4rem;
+        }
+
+        /* ── Items Grid (Odd One Out) ── */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin: 16px 0 24px;
+        }
+        @media (min-width: 520px) {
+            .items-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 32px;
+            padding: 18px 8px 14px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 0 #e7dcc0;
+            cursor: pointer;
+            transition: all 0.12s ease;
+            border: 3px solid transparent;
+            touch-action: manipulation;
+            user-select: none;
+        }
+        .item-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.07);
+        }
+        .item-card:active {
+            transform: scale(0.96);
+        }
+        .item-card .emoji {
+            font-size: 3.8rem;
+            display: block;
+            line-height: 1.2;
+        }
+        .item-card .label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4b3a2b;
+            margin-top: 4px;
+            display: block;
+        }
+        /* Category tag hidden during odd-one-out — shown only in results/feedback */
+        .item-card .tag {
+            display: none;
+        }
+
+        .item-card.correct-highlight {
+            border-color: #5fb382;
+            background: #edfaf3;
+            box-shadow: 0 0 0 4px rgba(95, 179, 130, 0.2);
+        }
+        .item-card.wrong-highlight {
+            border-color: #e07474;
+            background: #fdeeee;
+            box-shadow: 0 0 0 4px rgba(224, 116, 116, 0.2);
+        }
+        .item-card.selected-correct {
+            border-color: #5fb382;
+            background: #d4f0e1;
+        }
+        .item-card.selected-wrong {
+            border-color: #e07474;
+            background: #fdd6d6;
+        }
+        .item-card.disabled {
+            cursor: default;
+            opacity: 0.7;
+            transform: scale(0.97);
+            pointer-events: none;
+        }
+        .item-card.disabled:hover {
+            transform: scale(0.97);
+        }
+
+        /* ── Classification Buttons ── */
+        .classify-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin: 18px 0 24px;
+        }
+        .classify-btn {
+            border: 3px solid #e7dcc0;
+            background: white;
+            border-radius: 60px;
+            padding: 16px 44px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #3f3223;
+            cursor: pointer;
+            transition: all 0.12s ease;
+            box-shadow: 0 4px 0 #d6c9b4;
+            touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 0 1 auto;
+            min-width: 140px;
+            justify-content: center;
+        }
+        .classify-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #d6c9b4;
+        }
+        .classify-btn.natural {
+            background: #cae8d5;
+            border-color: #89c9a8;
+            color: #1f452f;
+            box-shadow: 0 4px 0 #5f9a7c;
+        }
+        .classify-btn.natural:active {
+            box-shadow: 0 1px 0 #5f9a7c;
+        }
+        .classify-btn.manmade {
+            background: #f5d4c0;
+            border-color: #e8b8a0;
+            color: #6f3f2a;
+            box-shadow: 0 4px 0 #cc8a5e;
+        }
+        .classify-btn.manmade:active {
+            box-shadow: 0 1px 0 #cc8a5e;
+        }
+        .classify-btn:disabled {
+            opacity: 0.5;
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #d6c9b4;
+            pointer-events: none;
+        }
+        .classify-btn.correct-highlight {
+            border-color: #5fb382;
+            background: #d4f0e1;
+            box-shadow: 0 0 0 4px rgba(95, 179, 130, 0.25), 0 4px 0 #5f9a7c;
+        }
+        .classify-btn.wrong-highlight {
+            border-color: #e07474;
+            background: #fdd6d6;
+            box-shadow: 0 0 0 4px rgba(224, 116, 116, 0.25), 0 4px 0 #cc8a5e;
+        }
+
+        /* ── Feedback ── */
+        .feedback {
+            background: #f8f2e8;
+            border-radius: 28px;
+            padding: 18px 22px;
+            margin: 10px 0 18px;
+            border-left: 6px solid #b6a58b;
+            animation: fadeSlide 0.25s ease;
+            min-height: 3.8rem;
+        }
+        .feedback.correct {
+            border-left-color: #5fb382;
+            background: #edfaf3;
+        }
+        .feedback.wrong {
+            border-left-color: #e07474;
+            background: #fdeeee;
+        }
+        .feedback .fb-head {
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .feedback .fb-detail {
+            font-size: 1.05rem;
+            margin-top: 4px;
+            color: #3f3223;
+            line-height: 1.5;
+        }
+
+        /* ── Next Button ── */
+        .next-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 12px;
+        }
+
+        /* ── Results Screen ── */
+        .results-summary {
+            text-align: center;
+            padding: 10px 0 6px;
+        }
+        .results-summary .big-score {
+            font-size: 5rem;
+            font-weight: 800;
+            color: #3f3223;
+            line-height: 1;
+            margin: 6px 0;
+        }
+        .results-summary .big-score span {
+            font-size: 2.4rem;
+            font-weight: 600;
+            color: #7a6852;
+        }
+        .results-summary .msg {
+            font-size: 1.5rem;
+            margin: 12px 0 24px;
+            color: #5b4a38;
+        }
+
+        .results-list {
+            margin: 20px 0 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 6px;
+        }
+        .results-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .results-list::-webkit-scrollbar-track {
+            background: #ede5d5;
+            border-radius: 20px;
+        }
+        .results-list::-webkit-scrollbar-thumb {
+            background: #c4b69e;
+            border-radius: 20px;
+        }
+
+        .result-item {
+            background: white;
+            border-radius: 24px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            border: 2px solid #ede5d5;
+            flex-wrap: wrap;
+        }
+        .result-item .ri-icon {
+            font-size: 2.2rem;
+            flex-shrink: 0;
+        }
+        .result-item .ri-text {
+            flex: 1;
+            font-size: 1rem;
+            color: #3f3223;
+            line-height: 1.4;
+            min-width: 150px;
+        }
+        .result-item .ri-text strong {
+            font-weight: 700;
+        }
+        .result-item .ri-status {
+            font-size: 1.8rem;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+        .result-item.correct-item {
+            border-color: #b8dfcb;
+            background: #f4fcf7;
+        }
+        .result-item.wrong-item {
+            border-color: #f5cccc;
+            background: #fdf4f4;
+        }
+
+        .results-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 10px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 500px) {
+            .app {
+                padding: 20px 14px 28px;
+                border-radius: 40px;
+            }
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            .question-prompt {
+                font-size: 1.3rem;
+            }
+            .item-card .emoji {
+                font-size: 2.8rem;
+            }
+            .item-card .label {
+                font-size: 0.95rem;
+            }
+            .classify-btn {
+                padding: 12px 28px;
+                font-size: 1.2rem;
+                min-width: 110px;
+            }
+            .btn {
+                padding: 12px 24px;
+                font-size: 1.1rem;
+            }
+            .start-screen h2 {
+                font-size: 1.7rem;
+            }
+            .results-summary .big-score {
+                font-size: 3.6rem;
+            }
+            .badge {
+                font-size: 0.85rem;
+                padding: 4px 12px;
+            }
+            .result-item .ri-text {
+                font-size: 0.9rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .items-grid {
+                gap: 10px;
+            }
+            .item-card {
+                padding: 12px 4px 10px;
+            }
+            .item-card .emoji {
+                font-size: 2.2rem;
+            }
+            .classify-btn {
+                padding: 10px 18px;
+                font-size: 1rem;
+                min-width: 80px;
+                gap: 6px;
+            }
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center p-4">
+<body>
 
-    <div class="w-full max-w-2xl bg-white rounded-3xl shadow-lg p-6 mb-8 text-center border-4 border-teal-400 mt-4">
-        <h1 class="text-3xl md:text-4xl font-black text-teal-600 mb-2">🌍 Science Explorer 🛠️</h1>
-        <div class="inline-block bg-teal-100 px-6 py-2 rounded-full border-2 border-teal-300">
-            <span class="text-xl font-bold text-teal-800">Stars Earned: ⭐ <span id="score">0</span></span>
+    <div class="app" id="app">
+        <!-- Header -->
+        <div class="header">
+            <h1><span>🌍</span> Kid<span style="color:#d88f4a;">Quiz</span></h1>
+            <div class="badge-group">
+                <span class="badge quiz-num" id="quizNumBadge">📋 Quiz #1</span>
+                <span class="badge score-badge" id="scoreBadge">⭐ 0 / 10</span>
+            </div>
         </div>
-    </div>
 
-    <div id="game-container" class="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-6 md:p-10 border-4 border-yellow-300 text-center">
-        <h2 id="question-text" class="text-2xl md:text-3xl font-bold text-gray-700 mb-8">Loading game...</h2>
+        <!-- Progress -->
+        <div class="progress-wrap">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
 
-        <div id="interactive-area" class="w-full"></div>
-        
-        <div id="feedback" class="h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center opacity-0 transition-opacity">
-            Feedback
+        <!-- ─── START SCREEN ─── -->
+        <div class="screen active" id="startScreen">
+            <div class="start-screen">
+                <span class="mascot">🧸</span>
+                <h2>Natural or Man‑Made?</h2>
+                <p>Find the odd one out!<br />Each quiz has <strong>10 brand‑new questions</strong>.</p>
+                <div class="features">
+                    <span>🌿 Natural</span>
+                    <span>🏭 Man‑Made</span>
+                    <span>🧩 Odd One Out</span>
+                    <span>♾️ Infinite Practice</span>
+                </div>
+                <button class="btn btn-primary" id="startBtn">🚀 Start New Quiz</button>
+                <div style="margin-top:18px;font-size:0.9rem;color:#9b8976;">
+                    Done 5 times · 50 times · 100 times — always fresh!
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── QUIZ SCREEN ─── -->
+        <div class="screen" id="quizScreen">
+            <div class="question-prompt" id="questionPrompt">❓</div>
+
+            <!-- Odd One Out Grid -->
+            <div class="items-grid" id="itemsGrid"></div>
+
+            <!-- Classification Buttons -->
+            <div class="classify-row" id="classifyRow" style="display:none;"></div>
+
+            <!-- Feedback -->
+            <div class="feedback" id="feedback" style="display:none;">
+                <div class="fb-head" id="fbHead">✅</div>
+                <div class="fb-detail" id="fbDetail"></div>
+            </div>
+
+            <!-- Next -->
+            <div class="next-row">
+                <button class="btn" id="nextBtn" disabled>Next ➜</button>
+            </div>
+        </div>
+
+        <!-- ─── RESULTS SCREEN ─── -->
+        <div class="screen" id="resultsScreen">
+            <div class="results-summary">
+                <div class="big-score" id="finalScore">10 <span>/ 10</span></div>
+                <div class="msg" id="finalMsg">🌟 Amazing work!</div>
+                <div style="font-size:1rem;color:#7a6852;margin-bottom:12px;" id="quizNumResult">Quiz #1</div>
+                <div class="results-list" id="resultsList"></div>
+                <div class="results-actions">
+                    <button class="btn btn-primary" id="retryBtn">🔄 New Quiz</button>
+                    <button class="btn" id="homeBtn">🏠 Home</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Database of items (Using Emojis as high-quality, fast-loading images)
-        const naturalItems = [
-            { name: "Tree", img: "🌳" }, { name: "Sun", img: "☀️" }, { name: "Flower", img: "🌻" },
-            { name: "Apple", img: "🍎" }, { name: "Water", img: "💧" }, { name: "Mountain", img: "⛰️" },
-            { name: "Dog", img: "🐶" }, { name: "Cat", img: "🐱" }, { name: "Leaf", img: "🍃" },
-            { name: "Cloud", img: "☁️" }, { name: "Butterfly", img: "🦋" }, { name: "Strawberry", img: "🍓" }
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  DATA – Natural & Man‑Made items with emojis
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const NATURAL = [
+            { emoji: '🌳', name: 'Tree' },
+            { emoji: '🌸', name: 'Flower' },
+            { emoji: '🍎', name: 'Apple' },
+            { emoji: '🍌', name: 'Banana' },
+            { emoji: '🍇', name: 'Grapes' },
+            { emoji: '🍓', name: 'Strawberry' },
+            { emoji: '🌽', name: 'Corn' },
+            { emoji: '🥕', name: 'Carrot' },
+            { emoji: '🍄', name: 'Mushroom' },
+            { emoji: '🌻', name: 'Sunflower' },
+            { emoji: '🌙', name: 'Moon' },
+            { emoji: '☀️', name: 'Sun' },
+            { emoji: '⭐', name: 'Star' },
+            { emoji: '🌈', name: 'Rainbow' },
+            { emoji: '🍃', name: 'Leaf' },
+            { emoji: '🌿', name: 'Plant' },
+            { emoji: '🪨', name: 'Rock' },
+            { emoji: '🏔️', name: 'Mountain' },
+            { emoji: '🌲', name: 'Pine Tree' },
+            { emoji: '🐱', name: 'Cat' },
+            { emoji: '🐶', name: 'Dog' },
+            { emoji: '🐦', name: 'Bird' },
+            { emoji: '🐟', name: 'Fish' },
+            { emoji: '🐘', name: 'Elephant' },
+            { emoji: '🦒', name: 'Giraffe' },
+            { emoji: '🐒', name: 'Monkey' },
+            { emoji: '🦁', name: 'Lion' },
+            { emoji: '🐯', name: 'Tiger' },
+            { emoji: '🐝', name: 'Bee' },
+            { emoji: '🦋', name: 'Butterfly' },
+            { emoji: '🌵', name: 'Cactus' },
+            { emoji: '🌊', name: 'Wave' },
         ];
 
-        const manMadeItems = [
-            { name: "Car", img: "🚗" }, { name: "House", img: "🏠" }, { name: "Robot", img: "🤖" },
-            { name: "Laptop", img: "💻" }, { name: "Bicycle", img: "🚲" }, { name: "Chair", img: "🪑" },
-            { name: "Book", img: "📖" }, { name: "Pencil", img: "✏️" }, { name: "Clock", img: "⏰" },
-            { name: "Television", img: "📺" }, { name: "Shoes", img: "👟" }, { name: "Teddy Bear", img: "🧸" }
+        const MANMADE = [
+            { emoji: '🏠', name: 'House' },
+            { emoji: '🚗', name: 'Car' },
+            { emoji: '✈️', name: 'Airplane' },
+            { emoji: '🚢', name: 'Ship' },
+            { emoji: '🚂', name: 'Train' },
+            { emoji: '🚲', name: 'Bicycle' },
+            { emoji: '🪑', name: 'Chair' },
+            { emoji: '🛏️', name: 'Bed' },
+            { emoji: '🍽️', name: 'Plate' },
+            { emoji: '🥄', name: 'Spoon' },
+            { emoji: '🔪', name: 'Knife' },
+            { emoji: '📱', name: 'Phone' },
+            { emoji: '💻', name: 'Computer' },
+            { emoji: '📺', name: 'TV' },
+            { emoji: '🎮', name: 'Game' },
+            { emoji: '🧸', name: 'Toy' },
+            { emoji: '✏️', name: 'Pencil' },
+            { emoji: '📚', name: 'Book' },
+            { emoji: '🏀', name: 'Ball' },
+            { emoji: '🎈', name: 'Balloon' },
+            { emoji: '🎁', name: 'Gift' },
+            { emoji: '🍕', name: 'Pizza' },
+            { emoji: '🍔', name: 'Burger' },
+            { emoji: '🍩', name: 'Donut' },
+            { emoji: '🧁', name: 'Cupcake' },
+            { emoji: '🍪', name: 'Cookie' },
+            { emoji: '🧥', name: 'Jacket' },
+            { emoji: '👟', name: 'Shoes' },
+            { emoji: '🎒', name: 'Backpack' },
+            { emoji: '🏫', name: 'School' },
+            { emoji: '🏥', name: 'Hospital' },
+            { emoji: '🏪', name: 'Store' },
+            { emoji: '🚪', name: 'Door' },
+            { emoji: '🪟', name: 'Window' },
+            { emoji: '🛋️', name: 'Couch' },
+            { emoji: '🚿', name: 'Shower' },
+            { emoji: '🛁', name: 'Bathtub' },
         ];
 
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HELPERS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function pick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function pickN(arr, n, exclude = null) {
+            const pool = arr.filter(x => x !== exclude);
+            const shuffled = shuffle(pool);
+            return shuffled.slice(0, n);
+        }
+
+        function isNatural(item) {
+            return NATURAL.some(n => n.emoji === item.emoji && n.name === item.name);
+        }
+
+        function getCategory(item) {
+            return isNatural(item) ? 'natural' : 'manmade';
+        }
+
+        function getCategoryLabel(cat) {
+            return cat === 'natural' ? '🌿 Natural' : '🏭 Man‑Made';
+        }
+
+        function getCategoryName(cat) {
+            return cat === 'natural' ? 'natural' : 'man‑made';
+        }
+
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  QUESTION GENERATORS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function generateOddOneOut() {
+            const majorityIsNatural = Math.random() < 0.5;
+            const majorityPool = majorityIsNatural ? NATURAL : MANMADE;
+            const minorityPool = majorityIsNatural ? MANMADE : NATURAL;
+
+            const majorityItems = pickN(majorityPool, 3);
+            const oddItem = pick(minorityPool);
+
+            const items = shuffle([...majorityItems, oddItem]);
+            const oddIndex = items.indexOf(oddItem);
+
+            const majorityCat = majorityIsNatural ? 'natural' : 'manmade';
+            const oddCat = majorityIsNatural ? 'manmade' : 'natural';
+
+            const explanation =
+                `The odd one is **${oddItem.emoji} ${oddItem.name}** — it's ${getCategoryName(oddCat)}, while the others are ${getCategoryName(majorityCat)}.`;
+
+            return {
+                type: 'oddoneout',
+                items,
+                correctIndex: oddIndex,
+                correctItem: oddItem,
+                explanation,
+                prompt: 'Which one is the odd one out?',
+            };
+        }
+
+        function generateClassification() {
+            const pool = Math.random() < 0.5 ? NATURAL : MANMADE;
+            const item = pick(pool);
+            const cat = getCategory(item);
+
+            const explanation =
+                `**${item.emoji} ${item.name}** is ${getCategoryName(cat)}. ${cat === 'natural' ? 'It comes from nature 🌿' : 'It was made by people 🏭'}`;
+
+            return {
+                type: 'classification',
+                item,
+                correctCategory: cat,
+                explanation,
+                promptDisplay: `Is **${item.emoji} ${item.name}** man‑made or natural?`,
+            };
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  QUIZ ENGINE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        const QUIZ_LENGTH = 10;
+        let quizNumber = 0;
+        let currentQuestions = [];
+        let currentIndex = 0;
         let score = 0;
+        let answered = false;
+        let results = [];
 
-        // Utility: Get random item from array
-        const getRandom = (arr, count = 1) => {
-            const shuffled = [...arr].sort(() => 0.5 - Math.random());
-            return count === 1 ? shuffled[0] : shuffled.slice(0, count);
-        };
+        // DOM refs
+        const startScreen = document.getElementById('startScreen');
+        const quizScreen = document.getElementById('quizScreen');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const startBtn = document.getElementById('startBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const homeBtn = document.getElementById('homeBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const questionPrompt = document.getElementById('questionPrompt');
+        const itemsGrid = document.getElementById('itemsGrid');
+        const classifyRow = document.getElementById('classifyRow');
+        const feedback = document.getElementById('feedback');
+        const fbHead = document.getElementById('fbHead');
+        const fbDetail = document.getElementById('fbDetail');
+        const progressFill = document.getElementById('progressFill');
+        const scoreBadge = document.getElementById('scoreBadge');
+        const quizNumBadge = document.getElementById('quizNumBadge');
+        const finalScore = document.getElementById('finalScore');
+        const finalMsg = document.getElementById('finalMsg');
+        const quizNumResult = document.getElementById('quizNumResult');
+        const resultsList = document.getElementById('resultsList');
 
-        // Utility: Shuffle an array
-        const shuffleArray = (arr) => arr.sort(() => 0.5 - Math.random());
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  SCREEN MANAGEMENT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        const questionText = document.getElementById("question-text");
-        const interactiveArea = document.getElementById("interactive-area");
-        const feedback = document.getElementById("feedback");
-        const scoreDisplay = document.getElementById("score");
-
-        function showFeedback(isCorrect, element) {
-            if (isCorrect) {
-                element.classList.add("correct-anim");
-                feedback.textContent = "🎉 Correct! Great job! 🎉";
-                feedback.className = "h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center text-green-700 bg-green-100 opacity-100 transition-opacity";
-                score++;
-                scoreDisplay.textContent = score;
-                // Wait 1.5 seconds then generate next question
-                setTimeout(generateQuestion, 1500);
-            } else {
-                element.classList.add("wrong-anim");
-                feedback.textContent = "Oops! Try again! 🤔";
-                feedback.className = "h-12 mt-6 text-2xl font-bold rounded-xl flex items-center justify-center text-red-700 bg-red-100 opacity-100 transition-opacity";
-                setTimeout(() => {
-                    element.classList.remove("wrong-anim");
-                    feedback.style.opacity = "0";
-                }, 1000);
-            }
+        function showScreen(name) {
+            [startScreen, quizScreen, resultsScreen].forEach(el => el.classList.remove('active'));
+            if (name === 'start') startScreen.classList.add('active');
+            if (name === 'quiz') quizScreen.classList.add('active');
+            if (name === 'results') resultsScreen.classList.add('active');
         }
 
-        // Game Mode 1: Classify Natural vs Man-Made
-        function buildClassifyGame() {
-            // Flip a coin to decide if we show a Natural or Man-Made item
-            const isNatural = Math.random() > 0.5;
-            const item = isNatural ? getRandom(naturalItems) : getRandom(manMadeItems);
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  GENERATE A FRESH QUIZ
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-            questionText.innerHTML = `Look at the <strong>${item.name}</strong>.<br>Is it Natural or Man-Made?`;
+        function generateQuiz() {
+            quizNumber++;
+            const questions = [];
+            const usedItems = new Set();
 
-            interactiveArea.innerHTML = `
-                <div class="text-8xl md:text-9xl mb-8 filter drop-shadow-md">${item.img}</div>
-                <div class="flex flex-col md:flex-row gap-4 justify-center">
-                    <button id="btn-natural" class="game-card flex-1 bg-green-100 border-4 border-green-400 text-green-800 text-3xl font-bold py-6 px-8 rounded-2xl shadow-sm">
-                        🌿 Natural
-                    </button>
-                    <button id="btn-manmade" class="game-card flex-1 bg-blue-100 border-4 border-blue-400 text-blue-800 text-3xl font-bold py-6 px-8 rounded-2xl shadow-sm">
-                        🏭 Man-Made
-                    </button>
-                </div>
-            `;
+            const itemKey = (item) => `${item.emoji}|${item.name}`;
 
-            document.getElementById("btn-natural").onclick = function() { showFeedback(isNatural, this); };
-            document.getElementById("btn-manmade").onclick = function() { showFeedback(!isNatural, this); };
-        }
-
-        // Game Mode 2: Odd One Out
-        function buildOddOneOutGame() {
-            const findManMade = Math.random() > 0.5; // If true, 3 natural, 1 man-made
-            
-            let options = [];
-            let correctItem;
-
-            if (findManMade) {
-                options = getRandom(naturalItems, 3);
-                correctItem = getRandom(manMadeItems);
-                questionText.innerHTML = `Find the <strong>Odd One Out</strong>!<br><span class="text-xl text-blue-600">(Which one was made by humans?)</span>`;
-            } else {
-                options = getRandom(manMadeItems, 3);
-                correctItem = getRandom(naturalItems);
-                questionText.innerHTML = `Find the <strong>Odd One Out</strong>!<br><span class="text-xl text-green-600">(Which one comes from nature?)</span>`;
+            while (questions.length < QUIZ_LENGTH) {
+                let q;
+                let attempts = 0;
+                let unique = false;
+                while (!unique && attempts < 30) {
+                    attempts++;
+                    if (Math.random() < 0.55) {
+                        q = generateOddOneOut();
+                    } else {
+                        q = generateClassification();
+                    }
+                    let keys;
+                    if (q.type === 'oddoneout') {
+                        keys = q.items.map(itemKey);
+                    } else {
+                        keys = [itemKey(q.item)];
+                    }
+                    const collision = keys.some(k => usedItems.has(k));
+                    if (!collision) {
+                        unique = true;
+                        keys.forEach(k => usedItems.add(k));
+                    }
+                }
+                if (!unique) {
+                    if (usedItems.size > 20) {
+                        const arr = Array.from(usedItems);
+                        for (let i = 0; i < 5 && arr.length > 0; i++) {
+                            usedItems.delete(arr.pop());
+                        }
+                    }
+                    q = Math.random() < 0.5 ? generateOddOneOut() : generateClassification();
+                }
+                questions.push(q);
             }
 
-            // Tag the correct item so we can verify the click
-            correctItem.isCorrect = true;
-            options.forEach(opt => opt.isCorrect = false);
-            options.push(correctItem);
-            
-            // Shuffle them so the odd one isn't always last
-            options = shuffleArray(options);
+            return questions;
+        }
 
-            interactiveArea.innerHTML = `<div class="grid grid-cols-2 gap-4"></div>`;
-            const grid = interactiveArea.querySelector('.grid');
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  START / RESET QUIZ
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-            options.forEach(opt => {
-                const btn = document.createElement("button");
-                btn.className = "game-card bg-gray-50 border-4 border-gray-200 rounded-3xl p-6 flex flex-col items-center justify-center hover:bg-white hover:border-yellow-400";
-                btn.innerHTML = `<span class="text-7xl mb-2">${opt.img}</span><span class="text-xl font-bold text-gray-600">${opt.name}</span>`;
-                btn.onclick = function() { showFeedback(opt.isCorrect, this); };
-                grid.appendChild(btn);
+        function startNewQuiz() {
+            currentQuestions = generateQuiz();
+            currentIndex = 0;
+            score = 0;
+            answered = false;
+            results = [];
+            showScreen('quiz');
+            renderQuestion();
+            updateProgressAndBadge();
+            nextBtn.disabled = true;
+            feedback.style.display = 'none';
+            quizNumBadge.textContent = `📋 Quiz #${quizNumber}`;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RENDER QUESTION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function renderQuestion() {
+            if (currentIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = currentQuestions[currentIndex];
+            answered = false;
+            feedback.style.display = 'none';
+            nextBtn.disabled = true;
+
+            itemsGrid.style.display = 'none';
+            classifyRow.style.display = 'none';
+            itemsGrid.innerHTML = '';
+            classifyRow.innerHTML = '';
+
+            if (q.type === 'oddoneout') {
+                questionPrompt.innerHTML = `🧩 ${q.prompt}`;
+                itemsGrid.style.display = 'grid';
+                q.items.forEach((item, idx) => {
+                    const card = document.createElement('div');
+                    card.className = 'item-card';
+                    card.dataset.index = idx;
+                    // 🔥 FIX: no .tag shown — categories are hidden during the question
+                    card.innerHTML = `
+                        <span class="emoji">${item.emoji}</span>
+                        <span class="label">${item.name}</span>
+                    `;
+                    card.addEventListener('click', () => handleOddOneOutClick(idx));
+                    itemsGrid.appendChild(card);
+                });
+            } else {
+                // classification
+                const displayPrompt = q.promptDisplay || `Is **${q.item.emoji} ${q.item.name}** man‑made or natural?`;
+                questionPrompt.innerHTML = `🤔 ${displayPrompt}`;
+                classifyRow.style.display = 'flex';
+
+                const naturalBtn = document.createElement('button');
+                naturalBtn.className = 'classify-btn natural';
+                naturalBtn.textContent = '🌿 Natural';
+                naturalBtn.dataset.choice = 'natural';
+                naturalBtn.addEventListener('click', () => handleClassificationClick('natural'));
+
+                const manmadeBtn = document.createElement('button');
+                manmadeBtn.className = 'classify-btn manmade';
+                manmadeBtn.textContent = '🏭 Man‑Made';
+                manmadeBtn.dataset.choice = 'manmade';
+                manmadeBtn.addEventListener('click', () => handleClassificationClick('manmade'));
+
+                classifyRow.appendChild(naturalBtn);
+                classifyRow.appendChild(manmadeBtn);
+            }
+
+            updateProgressAndBadge();
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HANDLE ODD ONE OUT CLICK
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function handleOddOneOutClick(index) {
+            if (answered) return;
+            answered = true;
+
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (index === q.correctIndex);
+            if (isCorrect) score++;
+
+            results.push({
+                question: q,
+                selected: index,
+                correct: isCorrect,
+                explanation: q.explanation,
+            });
+
+            const cards = itemsGrid.querySelectorAll('.item-card');
+            cards.forEach((card, idx) => {
+                card.classList.add('disabled');
+                if (idx === q.correctIndex) {
+                    card.classList.add('correct-highlight');
+                }
+                if (idx === index && !isCorrect) {
+                    card.classList.add('wrong-highlight');
+                }
+                if (idx === index && isCorrect) {
+                    card.classList.add('selected-correct');
+                }
+            });
+
+            showFeedback(isCorrect, q.explanation);
+            updateProgressAndBadge();
+            nextBtn.disabled = false;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  HANDLE CLASSIFICATION CLICK
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function handleClassificationClick(choice) {
+            if (answered) return;
+            answered = true;
+
+            const q = currentQuestions[currentIndex];
+            const isCorrect = (choice === q.correctCategory);
+            if (isCorrect) score++;
+
+            results.push({
+                question: q,
+                selected: choice,
+                correct: isCorrect,
+                explanation: q.explanation,
+            });
+
+            const btns = classifyRow.querySelectorAll('.classify-btn');
+            btns.forEach(btn => {
+                btn.disabled = true;
+                const btnChoice = btn.dataset.choice;
+                if (btnChoice === q.correctCategory) {
+                    btn.classList.add('correct-highlight');
+                }
+                if (btnChoice === choice && !isCorrect) {
+                    btn.classList.add('wrong-highlight');
+                }
+                if (btnChoice === choice && isCorrect) {
+                    btn.classList.add('correct-highlight');
+                }
+            });
+
+            showFeedback(isCorrect, q.explanation);
+            updateProgressAndBadge();
+            nextBtn.disabled = false;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  FEEDBACK
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function showFeedback(isCorrect, explanation) {
+            feedback.style.display = 'block';
+            feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'wrong');
+            fbHead.innerHTML = isCorrect ? '✅ Great job!' : '❌ Oops!';
+            fbDetail.innerHTML = explanation;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  PROGRESS & BADGE
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function updateProgressAndBadge() {
+            const total = currentQuestions.length;
+            const done = Math.min(currentIndex + (answered ? 1 : 0), total);
+            const pct = total > 0 ? (done / total) * 100 : 0;
+            progressFill.style.width = pct + '%';
+            scoreBadge.textContent = `⭐ ${score} / ${total}`;
+        }
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  NEXT QUESTION
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        nextBtn.addEventListener('click', () => {
+            if (nextBtn.disabled) return;
+            currentIndex++;
+            if (currentIndex >= currentQuestions.length) {
+                showResults();
+            } else {
+                renderQuestion();
+                updateProgressAndBadge();
+                feedback.style.display = 'none';
+                nextBtn.disabled = true;
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  RESULTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        function showResults() {
+            showScreen('results');
+            const total = currentQuestions.length;
+            finalScore.innerHTML = `${score} <span>/ ${total}</span>`;
+
+            let msg = '';
+            const pct = score / total;
+            if (pct === 1) msg = '🌟 Perfect! You\'re a superstar!';
+            else if (pct >= 0.8) msg = '🎉 Great job! Keep it up!';
+            else if (pct >= 0.6) msg = '😊 Good work! Practice makes perfect!';
+            else msg = '💪 You\'re learning! Try again and you\'ll get even better!';
+            finalMsg.textContent = msg;
+            quizNumResult.textContent = `Quiz #${quizNumber}`;
+
+            resultsList.innerHTML = '';
+            results.forEach((r, idx) => {
+                const div = document.createElement('div');
+                div.className = 'result-item ' + (r.correct ? 'correct-item' : 'wrong-item');
+
+                let qText = '';
+                if (r.question.type === 'oddoneout') {
+                    const correctItem = r.question.correctItem;
+                    qText =
+                        `Odd one out: ${r.question.items.map(i => i.emoji).join(' ')} → correct: ${correctItem.emoji} ${correctItem.name}`;
+                } else {
+                    const choiceLabel = r.selected === 'natural' ? '🌿 Natural' : '🏭 Man‑Made';
+                    qText =
+                        `${r.question.item.emoji} ${r.question.item.name} → you chose ${choiceLabel}`;
+                }
+
+                div.innerHTML = `
+                    <span class="ri-icon">${r.correct ? '✅' : '❌'}</span>
+                    <span class="ri-text"><strong>Q${idx+1}.</strong> ${qText}</span>
+                    <span class="ri-status">${r.correct ? '⭐' : '🔄'}</span>
+                `;
+                const detail = document.createElement('div');
+                detail.style.cssText =
+                    'width:100%;font-size:0.85rem;color:#6f5d49;padding:4px 0 0 8px;border-top:1px dashed #e7dcc0;margin-top:6px;';
+                detail.textContent = '💡 ' + r.explanation.replace(/\*\*/g, '');
+                div.appendChild(detail);
+
+                resultsList.appendChild(div);
             });
         }
 
-        // Main function to randomly pick a game mode
-        function generateQuestion() {
-            feedback.style.opacity = "0"; // hide feedback text
-            
-            // 50% chance for either game type
-            if (Math.random() > 0.5) {
-                buildClassifyGame();
-            } else {
-                buildOddOneOutGame();
-            }
-        }
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  BUTTON EVENTS
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        // Start the game!
-        generateQuestion();
+        startBtn.addEventListener('click', startNewQuiz);
+        retryBtn.addEventListener('click', startNewQuiz);
+        homeBtn.addEventListener('click', () => {
+            showScreen('start');
+            progressFill.style.width = '0%';
+            scoreBadge.textContent = '⭐ 0 / 10';
+            quizNumBadge.textContent = `📋 Quiz #${quizNumber}`;
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  KEYBOARD SUPPORT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (!nextBtn.disabled && quizScreen.classList.contains('active')) {
+                    nextBtn.click();
+                }
+                if (startScreen.classList.contains('active') && e.key === 'Enter') {
+                    startBtn.click();
+                }
+            }
+        });
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        //  INIT
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        showScreen('start');
+        progressFill.style.width = '0%';
+        scoreBadge.textContent = '⭐ 0 / 10';
+        quizNumBadge.textContent = `📋 Quiz #0`;
     </script>
+
 </body>
 </html>
